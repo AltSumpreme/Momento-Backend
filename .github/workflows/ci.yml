@@ -41,8 +41,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      - name: Check package.json scripts
+        run: cat package.json
+
       - name: Run ESLint
-        run: pnpm lint
+        run: pnpm eslint . --fix
 
       - name: Build the Project
         run: pnpm build
