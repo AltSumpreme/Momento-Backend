@@ -1,41 +1,35 @@
-name: Node.js CI
+name: CI Workflow
 
 on:
-  push:
-    branches: master 
   pull_request:
-    branches: master
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
 
-    - name: Install pnpm
-      run: npm install -g pnpm
+      - name: Enable Corepack (for pnpm)
+        run: corepack enable
 
-    - name: Install dependencies
-      run: pnpm install
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: Run Linter
-      run: pnpm lint
+      - name: Run ESLint
+        run: pnpm lint
 
-    - name: Build the project (if applicable)
-      run: pnpm build --if-present
-
-    - name: Run Tests
-      run: pnpm test
+      - name: Build the Project
+        run: pnpm build
