@@ -1,26 +1,28 @@
-name: CI Workflow
+name: Node.js CI
 
-on: 
-  pull_request:
-    branches:
-      - master
-    
+on:
   push:
-    branches:
-      - master
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
 
     - name: Install pnpm
@@ -32,5 +34,8 @@ jobs:
     - name: Run Linter
       run: pnpm lint
 
-    - name: Build the project
-      run: pnpm build
+    - name: Build the project (if applicable)
+      run: pnpm build --if-present
+
+    - name: Run Tests
+      run: pnpm test
