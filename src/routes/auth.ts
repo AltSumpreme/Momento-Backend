@@ -50,7 +50,7 @@ authRouter.post("/login", async (c) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email, role: user.role },
+      { id: user.id, name: user.name, email, role: user.role },
       JWT_SECRET,
       {
         expiresIn: "1h",
