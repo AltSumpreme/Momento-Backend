@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
+    "@hono/swagger-ui": "^0.5.0",
+    "@hono/zod-openapi": "^0.18.3",
     "@prisma/client": "6.2.1",
     "@supabase/supabase-js": "^2.47.13",
     "@typescript-eslint/parser": "^8.19.1",
@@ -18,7 +20,8 @@
     "eslint-plugin-prettier": "^5.2.1",
     "hono": "^4.6.16",
     "jsonwebtoken": "^9.0.2",
-    "lint-staged": "^15.3.0"
+    "lint-staged": "^15.3.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
