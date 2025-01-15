@@ -8,107 +8,34 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   name        String
   email       String    @unique
   password    String
-  role        Role      @default(USER) // Enum: ADMIN, ORGANIZER, USER
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  events      Event[]   @relation("UserEvents")
-  tickets     Ticket[]
-  payments    Payment[]
-  rsvps       RSVP[]
+  createdEvents Event[]  @relation("CreatedEvents")
+  bookings     Booking[]
 }
 
 model Event {
-  id           Int        @id @default(autoincrement())
+  id          String    @id @default(uuid())
   title        String
-  description  String
-  location     String
-  date         DateTime
-  createdBy    User       @relation("UserEvents", fields: [createdById], references: [id])
-  createdById  Int
-  tickets      Ticket[]
-  sponsors     Sponsor[]
-  rsvps        RSVP[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-}
-
-model Ticket {
-  id          Int       @id @default(autoincrement())
-  price       Float
-  type        TicketType // Enum: VIP, REGULAR, EARLY_BIRD
-  event       Event     @relation(fields: [eventId], references: [id])
-  eventId     Int
-  user        User?     @relation(fields: [userId], references: [id])
-  userId      Int?
-  payments    Payment[]
+  description String?
+  time        DateTime
+  location    String
+  createdBy   User       @relation("CreatedEvents", fields: [createdById], references: [id])
+  createdById String
+  bookings    Booking[]
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-model Payment {
-  id            Int       @id @default(autoincrement())
-  amount        Float
-  status        PaymentStatus @default(PENDING) // Enum: PENDING, SUCCESS, FAILED
-  method        PaymentMethod // Enum: CREDIT_CARD, DEBIT_CARD, UPI, PAYPAL
-  user          User      @relation(fields: [userId], references: [id])
-  userId        Int
-  ticket        Ticket    @relation(fields: [ticketId], references: [id])
-  ticketId      Int
-  transactionId String?   // Optional for failed transactions
-  createdAt     DateTime  @default(now())
-}
-
-model Sponsor {
-  id          Int       @id @default(autoincrement())
-  name        String
-  logo        String    // URL to sponsor logo
-  event       Event     @relation(fields: [eventId], references: [id])
-  eventId     Int
-  createdAt   DateTime  @default(now())
-}
-
-model RSVP {
-  id          Int       @id @default(autoincrement())
-  status      RSVPStatus // Enum: ACCEPTED, DECLINED, PENDING
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
-  event       Event     @relation(fields: [eventId], references: [id])
-  eventId     Int
-  guests      Int       @default(0) // Number of additional guests
-  note        String?   // Optional note from the user
-  createdAt   DateTime  @default(now())
-}
-
-enum Role {
-  ADMIN
-  ORGANIZER
-  USER
-}
-
-enum TicketType {
-  VIP
-  REGULAR
-  EARLY_BIRD
-}
-
-enum PaymentStatus {
-  PENDING
-  SUCCESS
-  FAILED
-}
-
-enum PaymentMethod {
-  CREDIT_CARD
-  DEBIT_CARD
-  UPI
-  PAYPAL
-}
-
-enum RSVPStatus {
-  ACCEPTED
-  DECLINED
-  PENDING
+model Booking {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  event     Event   @relation(fields: [eventId], references: [id])
+  eventId   String
+  bookedAt  DateTime @default(now())
 }

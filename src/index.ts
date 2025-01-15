@@ -1,17 +1,27 @@
 import { serve } from "@hono/node-server";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { swaggerSpec } from "../utils/swaggeSpec.js";
-import { authRouter } from "./routes/auth.js";
-import { publicRouter } from "./routes/public.js";
-import { secureRouter } from "./routes/secure.js";
+import { authRouter } from "./routes/auth/index.js";
+import { publicRouter } from "./routes/public/index.js";
+import { secureRouter } from "./routes/secure/index.js";
 
 const app = new OpenAPIHono();
 
-app.get("/docs", swaggerUI({ url: "/swagger.json" }));
-app.get("/swagger.json", (c) => {
-  return c.json(swaggerSpec);
+app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
+  type: "http",
+  scheme: "bearer",
+  bearerFormat: "JWT",
 });
+
+app.doc("/openapi", {
+  openapi: "3.0.0",
+  info: {
+    version: "1.0.0",
+    title: "Momento API Documentation",
+  },
+});
+
+app.get("/docs", swaggerUI({ url: "/openapi" }));
 
 app.get("/", (c) => c.text("Hello Hono!"));
 app.route("/auth", authRouter);
