@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { cors } from "hono/cors";
-import { authRouter } from "./routes/auth/index.js";
+import authRouter from "./routes/auth/index.js";
 import { publicRouter } from "./routes/public/index.js";
 import { secureRouter } from "./routes/secure/index.js";
 import { jwt } from "hono/jwt";

@@ -19,8 +19,8 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "hono": "^4.6.16",
-    "jsonwebtoken": "^9.0.2",
     "lint-staged": "^15.3.0",
+    "uuid": "^11.0.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

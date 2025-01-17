@@ -25,7 +25,6 @@ export const login = createRoute({
         "application/json": {
           schema: z
             .object({
-              success: z.boolean().openapi({ example: true }),
               message: z.string().openapi({ example: "Login successful" }),
               token: z.string().openapi({
                 example:
@@ -38,44 +37,12 @@ export const login = createRoute({
     },
     403: {
       description: "Invalid password",
-      content: {
-        "application/json": {
-          schema: z
-            .object({
-              success: z.boolean().openapi({ example: false }),
-              error: z
-                .string()
-                .openapi({ example: "Invalid email or password" }),
-            })
-            .openapi("ErrorResponse"),
-        },
-      },
     },
     404: {
       description: "User not found",
-      content: {
-        "application/json": {
-          schema: z
-            .object({
-              success: z.boolean().openapi({ example: false }),
-              error: z.string().openapi({ example: "User not found" }),
-            })
-            .openapi("ErrorResponse"),
-        },
-      },
     },
     500: {
       description: "JWT secret not set",
-      content: {
-        "application/json": {
-          schema: z
-            .object({
-              success: z.boolean().openapi({ example: false }),
-              error: z.string().openapi({ example: "JWT secret not set" }),
-            })
-            .openapi("ErrorResponse"),
-        },
-      },
     },
   },
 });
@@ -107,7 +74,6 @@ export const signup = createRoute({
         "application/json": {
           schema: z
             .object({
-              success: z.boolean().openapi({ example: true }),
               message: z.string().openapi({ example: "Signup successful" }),
               token: z.string().openapi({
                 example:
@@ -120,29 +86,9 @@ export const signup = createRoute({
     },
     409: {
       description: "User already exists",
-      content: {
-        "application/json": {
-          schema: z
-            .object({
-              success: z.boolean().openapi({ example: false }),
-              error: z.string().openapi({ example: "User already exists" }),
-            })
-            .openapi("ErrorResponse"),
-        },
-      },
     },
     500: {
       description: "JWT secret not set",
-      content: {
-        "application/json": {
-          schema: z
-            .object({
-              success: z.boolean().openapi({ example: false }),
-              error: z.string().openapi({ example: "JWT secret not set" }),
-            })
-            .openapi("ErrorResponse"),
-        },
-      },
     },
   },
 });
