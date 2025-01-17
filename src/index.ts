@@ -5,14 +5,22 @@ import { cors } from "hono/cors";
 import { authRouter } from "./routes/auth/index.js";
 import { publicRouter } from "./routes/public/index.js";
 import { secureRouter } from "./routes/secure/index.js";
+import { jwt } from "hono/jwt";
+import type { JwtVariables } from "hono/jwt";
 
-const app = new OpenAPIHono();
+type Variables = JwtVariables;
+
+const app = new OpenAPIHono<{ Variables: Variables }>();
 
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
   scheme: "bearer",
   bearerFormat: "JWT",
 });
+
+app.route("/auth", authRouter);
+
+app.get("/", (c) => c.text("Hello Hono!"));
 
 app.doc("/openapi", {
   openapi: "3.0.0",
@@ -24,23 +32,20 @@ app.doc("/openapi", {
 
 app.get("/docs", swaggerUI({ url: "/openapi" }));
 
-app.use(
-  "*",
-  cors({
-    origin: (origin) => {
-      const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
-      if (origin && allowedOrigins.includes(origin)) {
-        return origin;
-      }
-      return "";
-    },
-    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const secret = process.env.JWT_SECRET;
+if (!secret) {
+  throw new Error("JWT_SECRET not set");
+}
 
-app.get("/", (c) => c.text("Hello Hono!"));
-app.route("/auth", authRouter);
+app.use("*", (c, next) => {
+  const corsMiddleware = cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
+  });
+  return corsMiddleware(c, next);
+});
+
+app.use(jwt({ secret: secret }));
+
 app.route("/public", publicRouter);
 app.route("/secure", secureRouter);
 
