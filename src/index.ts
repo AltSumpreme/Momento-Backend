@@ -44,9 +44,6 @@ app.use("*", (c, next) => {
 
 app.use(jwt({ secret: secret }));
 
-app.route("/public", publicRouter);
-app.route("/secure", secureRouter);
-
 const port = 8080;
 console.log(`Server is running on http://localhost:${port}`);
 
