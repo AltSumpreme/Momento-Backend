@@ -10,13 +10,18 @@ type Variables = JwtVariables;
 
 const app = new OpenAPIHono<{ Variables: Variables }>();
 
+app.use("*", (c, next) => {
+  const corsMiddleware = cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
+  });
+  return corsMiddleware(c, next);
+});
+
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
   scheme: "bearer",
   bearerFormat: "JWT",
 });
-
-app.route("/auth", authRouter);
 
 app.get("/", (c) => c.text("Hello Hono!"));
 
@@ -30,19 +35,15 @@ app.doc("/openapi", {
 
 app.get("/docs", swaggerUI({ url: "/openapi" }));
 
+app.route("/auth", authRouter);
+
+// ----- Place the protected routes after this -----
 const secret = process.env.JWT_SECRET;
 if (!secret) {
   throw new Error("JWT_SECRET not set");
 }
-
-app.use("*", (c, next) => {
-  const corsMiddleware = cors({
-    origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
-  });
-  return corsMiddleware(c, next);
-});
-
 app.use(jwt({ secret: secret }));
+// -------------------------------------------------
 
 const port = 8080;
 console.log(`Server is running on http://localhost:${port}`);

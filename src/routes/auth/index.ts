@@ -47,14 +47,13 @@ authRouter.openapi(login, async (ctx) => {
     );
   }
 });
+
 authRouter.openapi(signup, async (ctx) => {
   const { name, email, password } = await ctx.req.json();
   if (!process.env.JWT_SECRET) {
     return ctx.text("JWT secret not set", 500);
   }
   try {
-    const hashedpassword = await hashPassword(password);
-
     const user = await prisma.auth.findUnique({
       where: { email },
     });
@@ -65,6 +64,9 @@ authRouter.openapi(signup, async (ctx) => {
         409
       );
     }
+
+    const hashedpassword = await hashPassword(password);
+
     const newUser = await prisma.$transaction(async (tx) => {
       const auth = await tx.auth.create({
         data: {
