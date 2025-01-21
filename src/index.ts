@@ -3,6 +3,7 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { cors } from "hono/cors";
 import authRouter from "./routes/auth/index.js";
+import userRouter from "./routes/user/index.js";
 import { jwt } from "hono/jwt";
 import type { JwtVariables } from "hono/jwt";
 
@@ -44,6 +45,8 @@ if (!secret) {
 }
 app.use(jwt({ secret: secret }));
 // -------------------------------------------------
+
+app.route("/user", userRouter);
 
 const port = 8080;
 console.log(`Server is running on http://localhost:${port}`);
