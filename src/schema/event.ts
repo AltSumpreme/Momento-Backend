@@ -12,9 +12,12 @@ export const eventSchema = z.object({
     .string()
     .optional()
     .openapi({ example: "An amazing tech conference" }),
-  time: z.string().datetime().openapi({ example: "2024-01-01T10:00:00Z" }),
+  eventDateTime: z
+    .string()
+    .datetime()
+    .openapi({ example: "2024-01-01T10:00:00Z" }),
   location: z.string().openapi({ example: "123 Conference Center, New York" }),
-  createdById: z
+  userId: z
     .string()
     .uuid()
     .openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
