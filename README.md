@@ -90,17 +90,20 @@ npm run dev
 ---
 
 ## API Endpoints
-### 🔑 Authentication
+### Authentication
 - **`POST /auth/register`** – Register a new user
 - **`POST /auth/login`** – Authenticate and receive a JWT
 
-### 🎟️ Events
-- **`POST /events`** – Create a new event _(Admin/Organizer only)_
+### User
+- **`GET /User`** - Checks for the user and returns user specific details
+
+###  Events
+- **`POST /events`** – Create a new event 
 - **`GET /events`** – List all events
 - **`GET /events/:id`** – Get event details
-- **`DELETE /events/:id`** – Delete an event _(Admin/Organizer only)_
+- **`DELETE /events/:id`** – Delete an event
 
-### 📅 Bookings
+###  Bookings
 - **`POST /bookings`** – Book an event
 - **`GET /bookings`** – List user bookings
 
