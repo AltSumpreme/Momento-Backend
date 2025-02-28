@@ -14,7 +14,7 @@ model Auth {
   email     String   @unique
   password  String
 
-  user User? 
+  user User?
 }
 
 model User {
@@ -49,6 +49,8 @@ model Booking {
   event    Event    @relation(fields: [eventId], references: [id])
   eventId  String
   bookedAt DateTime @default(now())
+
+  @@unique([userId, eventId])
 }
 
 enum Role {

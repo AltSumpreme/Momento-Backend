@@ -6,6 +6,7 @@ import authRouter from "./routes/auth/index.js";
 import userRouter from "./routes/user/index.js";
 import { jwt } from "hono/jwt";
 import type { JwtVariables } from "hono/jwt";
+import bookRouter from "./routes/book/index.js";
 import eventRouter from "./routes/events/index.js";
 
 type Variables = JwtVariables;
@@ -48,6 +49,7 @@ app.use(jwt({ secret: secret }));
 // -------------------------------------------------
 
 app.route("/user", userRouter);
+app.route("/book", bookRouter);
 app.route("/event", eventRouter);
 
 const port = 8080;
