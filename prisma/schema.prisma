@@ -24,7 +24,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   authid        String    @unique
-  Auth          Auth      @relation(fields: [authid], references: [id])
+  Auth          Auth      @relation(fields: [authid], references: [id],onDelete: Cascade)
   createdEvents Event[]   @relation("CreatedEvents")
   bookings      Booking[]
 }

@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "prepare": "husky init",
+    "prepare": "husky",
     "lint": "eslint .",
     "lint-staged": "lint-staged"
   },
