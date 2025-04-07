@@ -117,19 +117,6 @@ export const createBooking = createRoute({
   method: "post",
   path: "/{eventId}",
   security: [{ Bearer: [] }],
-  request: {
-    body: {
-      content: {
-        "application/json": {
-          schema: z.object({
-            id: z.string(),
-            role: z.string(),
-            exp: z.number(),
-          }),
-        },
-      },
-    },
-  },
   responses: {
     200: {
       description: "Booking created successfully",
