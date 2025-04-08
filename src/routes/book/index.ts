@@ -6,17 +6,21 @@ import {
   getBooking,
   getBookings,
 } from "./route.js";
+import { getCurrentUser } from "../../lib/middleware.js";
 
 const bookRouter = new OpenAPIHono();
 
 // GET info about a specific booking
 bookRouter.openapi(getBooking, async (ctx) => {
-  const { id } = await ctx.get("jwtPayload");
+  const user = getCurrentUser(ctx);
+  if (!user) {
+    return ctx.json({ error: "User not found" }, 404);
+  }
   const { eventId } = ctx.req.param();
 
   try {
     const booking = await prisma.booking.findUnique({
-      where: { userId_eventId: { userId: id, eventId } },
+      where: { userId_eventId: { userId: user.ID, eventId } },
       include: { user: true, event: true },
     });
 
@@ -32,13 +36,21 @@ bookRouter.openapi(getBooking, async (ctx) => {
 
 // GET all the bookings of a user
 bookRouter.openapi(getBookings, async (ctx) => {
-  const { id } = ctx.get("jwtPayload");
-
+  const user = getCurrentUser(ctx);
+  if (!user) {
+    return ctx.json({ error: "User not found" }, 404);
+  }
+  const page = parseInt(ctx.req.query("page") || "1", 10);
+  const limit = parseInt(ctx.req.query("limit") || "10", 10);
+  const currentPage = isNaN(page) || page < 1 ? 1 : page;
+  const perPage = isNaN(limit) || limit < -1 || limit > 10 ? 10 : limit;
   try {
     const userBookings = await prisma.booking.findMany({
       where: {
-        userId: id,
+        userId: user.ID,
       },
+      skip: (currentPage - 1) * perPage,
+      take: perPage,
     });
 
     if (!userBookings) {
@@ -56,7 +68,10 @@ bookRouter.openapi(getBookings, async (ctx) => {
 
 // Book an event
 bookRouter.openapi(createBooking, async (ctx) => {
-  const { id } = ctx.get("jwtPayload");
+  const userId = getCurrentUser(ctx).id;
+  if (!userId) {
+    return ctx.json({ error: "User not found" }, 404);
+  }
   const { eventId } = ctx.req.param();
 
   try {
@@ -71,7 +86,7 @@ bookRouter.openapi(createBooking, async (ctx) => {
     const existingBooking = await prisma.booking.findUnique({
       where: {
         userId_eventId: {
-          userId: id,
+          userId: userId,
           eventId: eventId,
         },
       },
@@ -83,7 +98,7 @@ bookRouter.openapi(createBooking, async (ctx) => {
 
     const booking = await prisma.booking.create({
       data: {
-        userId: id,
+        userId: userId,
         eventId: eventId,
       },
     });
