@@ -22,12 +22,7 @@ app.use("*", async (c, next) => {
   await next();
 });
 
-app.use("*", (c, next) => {
-  const corsMiddleware = cors({
-    origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
-  });
-  return corsMiddleware(c, next);
-});
+app.use("*", cors({ origin: process.env.ALLOWED_ORIGINS?.split(",") || [] }));
 
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
@@ -50,7 +45,7 @@ app.get("/docs", swaggerUI({ url: "/openapi" }));
 app.route("/auth", authRouter);
 
 // ----- Place the protected routes after this -----
-app.use(jwt({ secret: process.env.JWT_SECRET! }));
+app.use("*", jwt({ secret: process.env.JWT_SECRET! }));
 // -------------------------------------------------
 
 app.route("/user", userRouter);

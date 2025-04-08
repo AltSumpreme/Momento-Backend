@@ -40,10 +40,12 @@ bookRouter.openapi(getBookings, async (ctx) => {
   if (!user) {
     return ctx.json({ error: "User not found" }, 404);
   }
+
   const page = parseInt(ctx.req.query("page") || "1", 10);
   const limit = parseInt(ctx.req.query("limit") || "10", 10);
   const currentPage = isNaN(page) || page < 1 ? 1 : page;
   const perPage = isNaN(limit) || limit < -1 || limit > 10 ? 10 : limit;
+
   try {
     const userBookings = await prisma.booking.findMany({
       where: {
