@@ -50,8 +50,7 @@ app.get("/docs", swaggerUI({ url: "/openapi" }));
 app.route("/auth", authRouter);
 
 // ----- Place the protected routes after this -----
-if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET not set");
-app.use(jwt({ secret: process.env.JWT_SECRET }));
+app.use(jwt({ secret: process.env.JWT_SECRET! }));
 // -------------------------------------------------
 
 app.route("/user", userRouter);
