@@ -14,7 +14,7 @@ const eventRouter = new OpenAPIHono();
 //POST /events - Create a new event
 eventRouter.openapi(createEvent, async (ctx) => {
   const { title, description, eventDateTime, location } = ctx.req.valid("json");
-  const { id } = await ctx.get("jwtPayload");
+  const id = getCurrentUser(ctx).id;
   try {
     await prisma.event.create({
       data: {

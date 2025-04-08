@@ -122,7 +122,7 @@ bookRouter.openapi(createBooking, async (ctx) => {
 
 // DELETE a booking
 bookRouter.openapi(deleteBooking, async (ctx) => {
-  const { id } = ctx.get("jwtPayload");
+  const id = getCurrentUser(ctx).id;
   const { eventId } = ctx.req.param();
 
   try {
