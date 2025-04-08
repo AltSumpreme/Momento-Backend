@@ -33,12 +33,17 @@ bookRouter.openapi(getBooking, async (ctx) => {
 // GET all the bookings of a user
 bookRouter.openapi(getBookings, async (ctx) => {
   const { id } = ctx.get("jwtPayload");
-
+  const page = parseInt(ctx.req.query("page") || "1", 10);
+  const limit = parseInt(ctx.req.query("limit") || "10", 10);
+  const currentPage = isNaN(page) || page < 1 ? 1 : page;
+  const perPage = isNaN(limit) || limit < -1 || limit > 10 ? 10 : limit;
   try {
     const userBookings = await prisma.booking.findMany({
       where: {
         userId: id,
       },
+      skip: (currentPage - 1) * perPage,
+      take: perPage,
     });
 
     if (!userBookings) {

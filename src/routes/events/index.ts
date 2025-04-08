@@ -39,6 +39,11 @@ eventRouter.openapi(createEvent, async (ctx) => {
 //GET /events - Get all events
 eventRouter.openapi(getEvent, async (ctx) => {
   try {
+    const page = parseInt(ctx.req.query("page") || "1", 10);
+    const limit = parseInt(ctx.req.query("limit") || "10", 10);
+    const currentPage = isNaN(page) || page < 1 ? 1 : page;
+    const perPage = isNaN(limit) || limit < -1 || limit > 10 ? 10 : limit;
+
     const events = await prisma.event.findMany({
       select: {
         id: true,
@@ -48,6 +53,8 @@ eventRouter.openapi(getEvent, async (ctx) => {
         location: true,
         userId: true,
       },
+      skip: (currentPage - 1) * perPage,
+      take: perPage,
     });
     const formattedEvents = events.map((event) => ({
       ...event,
