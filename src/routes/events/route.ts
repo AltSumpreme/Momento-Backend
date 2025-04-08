@@ -30,10 +30,6 @@ export const createEvent = createRoute({
               description: "Location of the event",
               example: "New York City",
             }),
-            userId: z.string().uuid().openapi({
-              description: "ID of the user creating the event",
-              example: "123e4567-e89b-12d3-a456-426614174000",
-            }),
           }),
         },
       },
@@ -135,10 +131,6 @@ export const getEventbyId = createRoute({
             location: z.string().openapi({
               description: "Location of the event",
               example: "New York City",
-            }),
-            userId: z.string().uuid().openapi({
-              description: "ID of the user creating the event",
-              example: "123e4567-e89b-12d3-a456-426614174000",
             }),
           }),
         },

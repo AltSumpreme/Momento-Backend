@@ -40,14 +40,19 @@ bookRouter.openapi(getBookings, async (ctx) => {
   if (!user) {
     return ctx.json({ error: "User not found" }, 404);
   }
+
   const page = parseInt(ctx.req.query("page") || "1", 10);
   const limit = parseInt(ctx.req.query("limit") || "10", 10);
   const currentPage = isNaN(page) || page < 1 ? 1 : page;
   const perPage = isNaN(limit) || limit < -1 || limit > 10 ? 10 : limit;
+
   try {
     const userBookings = await prisma.booking.findMany({
       where: {
         userId: user.ID,
+      },
+      include: {
+        event: true,
       },
       skip: (currentPage - 1) * perPage,
       take: perPage,
@@ -117,7 +122,7 @@ bookRouter.openapi(createBooking, async (ctx) => {
 
 // DELETE a booking
 bookRouter.openapi(deleteBooking, async (ctx) => {
-  const { id } = ctx.get("jwtPayload");
+  const id = getCurrentUser(ctx).id;
   const { eventId } = ctx.req.param();
 
   try {

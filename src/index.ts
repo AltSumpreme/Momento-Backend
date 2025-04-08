@@ -13,12 +13,16 @@ type Variables = JwtVariables;
 
 const app = new OpenAPIHono<{ Variables: Variables }>();
 
-app.use("*", (c, next) => {
-  const corsMiddleware = cors({
-    origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
-  });
-  return corsMiddleware(c, next);
+// Middleware for logging in dev env
+app.use("*", async (c, next) => {
+  const methods = ["GET", "POST", "PUT", "DELETE"];
+  if (methods.includes(c.req.method)) {
+    console.log(`${c.req.method} ${new URL(c.req.url).pathname}`);
+  }
+  await next();
 });
+
+app.use("*", cors({ origin: process.env.ALLOWED_ORIGINS?.split(",") || [] }));
 
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
@@ -41,11 +45,7 @@ app.get("/docs", swaggerUI({ url: "/openapi" }));
 app.route("/auth", authRouter);
 
 // ----- Place the protected routes after this -----
-const secret = process.env.JWT_SECRET;
-if (!secret) {
-  throw new Error("JWT_SECRET not set");
-}
-app.use(jwt({ secret: secret }));
+app.use("*", jwt({ secret: process.env.JWT_SECRET! }));
 // -------------------------------------------------
 
 app.route("/user", userRouter);
@@ -53,7 +53,7 @@ app.route("/book", bookRouter);
 app.route("/event", eventRouter);
 
 const port = 8080;
-console.log(`Server is running on http://localhost:${port}`);
+console.log(`Server: http://localhost:${port}/`);
 
 serve({
   fetch: app.fetch,

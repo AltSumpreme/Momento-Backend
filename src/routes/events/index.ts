@@ -10,10 +10,11 @@ import {
 } from "./route.js";
 
 const eventRouter = new OpenAPIHono();
+
 //POST /events - Create a new event
 eventRouter.openapi(createEvent, async (ctx) => {
-  const { title, description, eventDateTime, location, userId } =
-    await ctx.req.valid("json");
+  const { title, description, eventDateTime, location } = ctx.req.valid("json");
+  const id = getCurrentUser(ctx).id;
   try {
     await prisma.event.create({
       data: {
@@ -21,7 +22,7 @@ eventRouter.openapi(createEvent, async (ctx) => {
         description,
         eventDateTime: new Date(eventDateTime),
         location,
-        userId,
+        userId: id,
       },
     });
     return ctx.json({ message: "Event created successfully" }, 201);
@@ -73,7 +74,7 @@ eventRouter.openapi(getEvent, async (ctx) => {
 });
 //GET /events/{id} - Get event by id
 eventRouter.openapi(getEventbyId, async (ctx) => {
-  const { id } = await ctx.req.param();
+  const { id } = ctx.req.param();
   try {
     const event = await prisma.event.findUnique({
       where: { id },
@@ -109,7 +110,8 @@ eventRouter.openapi(updateEvent, async (ctx) => {
     if (!userId) {
       return ctx.json({ error: "User is not logged in" }, 401);
     }
-    const { id, title, description, eventDateTime, location } =
+    const { id } = ctx.req.param();
+    const { title, description, eventDateTime, location } =
       await ctx.req.valid("json");
     const event = await prisma.event.findUnique({
       where: { id },
