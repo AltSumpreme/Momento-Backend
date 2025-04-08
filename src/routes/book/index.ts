@@ -51,6 +51,9 @@ bookRouter.openapi(getBookings, async (ctx) => {
       where: {
         userId: user.ID,
       },
+      include: {
+        event: true,
+      },
       skip: (currentPage - 1) * perPage,
       take: perPage,
     });
