@@ -1,7 +1,7 @@
 # Momento
 
 ## Overview
-The **Momento** is a robust backend application built with **Hono**, **Prisma**, and **PostgreSQL**. It provides comprehensive functionalities for user authentication, event management, and booking systems, while enforcing a structured repository pattern and pre-commit hooks with **Husky**.
+**Momento** is a robust backend application built with **Hono**, **Prisma**, and **PostgreSQL**. It provides comprehensive functionalities for user authentication, event management, and booking systems, while enforcing a structured repository pattern and pre-commit hooks with **Husky**.
 
 ### Features
 ✅ **User Authentication** (Prisma & PostgreSQL)  
