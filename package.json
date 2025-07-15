@@ -1,12 +1,14 @@
 {
   "name": "my-app",
+  "module": "es2022",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "rm -rf dist/ && tsc",
     "prepare": "husky",
     "lint": "eslint .",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "start": "tsx src/index.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.8",
@@ -14,8 +16,7 @@
     "@hono/zod-openapi": "^0.18.4",
     "@prisma/client": "6.4.1",
     "@supabase/supabase-js": "^2.48.1",
-    "@typescript-eslint/parser": "^8.24.1",
-    "bcrypt": "^5.1.1",
+    "argon2": "^0.43.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.3",
     "hono": "^4.7.2",
@@ -25,15 +26,19 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@types/argon2": "^0.15.4",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^20.17.19",
-    "eslint": "^9.20.1",
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
+    "eslint": "^9.31.0",
     "globals": "^15.15.0",
     "husky": "^9.1.7",
     "prettier": "3.4.2",
     "prisma": "^6.4.0",
     "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.24.1"
   },
   "packageManager": "pnpm@10.6.2+sha512.47870716bea1572b53df34ad8647b42962bc790ce2bf4562ba0f643237d7302a3d6a8ecef9e4bdfc01d23af1969aa90485d4cebb0b9638fa5ef1daef656f6c1b"
